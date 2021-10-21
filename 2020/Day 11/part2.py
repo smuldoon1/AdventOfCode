@@ -2,13 +2,13 @@ import math
 
 seats = []
 
-with open('test.txt') as file:
+with open('input.txt') as file:
     seats = file.readlines()
 
 def isNeighbourOccupied(row, column, xInc, yInc, seatArray):
-    y = column + xInc
-    x = column + yInc
-    while x >= 0 and y >= 0 and len(seatArray[row]) and y < len(seatArray):
+    y = row + yInc
+    x = column + xInc
+    while x >= 0 and y >= 0 and x < len(seatArray[0]) - 1 and y < len(seatArray):
         if seatArray[y][x] == '.':
             y += yInc
             x += xInc
@@ -20,10 +20,12 @@ def isNeighbourOccupied(row, column, xInc, yInc, seatArray):
 
 def setSeat(row, column, seatArray):
     adjacentOccupied = 0
-    for r in range(max(0, row - 1), min(len(seatArray), row + 2)):
-        for c in range(max(0, column - 1), min(len(seatArray[r]), column + 2)):
-            if (r != row or c != column):
-                adjacentOccupied += isNeighbourOccupied(row, column, row - r, column - c, seatArray)
+    if seatArray[row][column] == '.':
+        return None
+    for r in range(-1, 2):
+        for c in range(-1, 2):
+            if (r != 0 or c != 0):
+                adjacentOccupied += isNeighbourOccupied(row, column, c, r, seatArray)
     if seatArray[row][column] == 'L' and adjacentOccupied == 0:
         return '#'
     elif seatArray[row][column] == '#' and adjacentOccupied >= 5:
@@ -45,7 +47,6 @@ while hasChanged:
                 newRow += seats[r][c]
         newSeats[r] = newRow
     seats = newSeats
-print(seats)
 
 occupiedSeats = 0
 for r in range(len(seats)):
